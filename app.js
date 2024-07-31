@@ -1,7 +1,7 @@
 const express = require('express');
-const signupRoute = require("./routes/SignupRoute");
-const loginRoute = require("./routes/LoginRoute");
-const AuthenticatedRoute = require("./routes/AuthenticatedRoute");
+const signupRoute = require("./src/routes/SignupRoute");
+const loginRoute = require("./src/routes/LoginRoute");
+const AuthenticatedRoute = require("./src/routes/AuthenticatedRoute");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
