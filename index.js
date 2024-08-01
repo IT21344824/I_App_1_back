@@ -2,8 +2,11 @@ const express = require('express');
 const signupRoute = require("./src/routes/SignupRoute");
 const loginRoute = require("./src/routes/LoginRoute");
 const AuthenticatedRoute = require("./src/routes/AuthenticatedRoute");
+const fileUploadRoute = require("./src/routes/FileUploadRoute"); // New
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const multer = require('multer');
+
 
 const app = express();
 const PORT = process.env.PORT || 5000
@@ -19,6 +22,9 @@ app.get('/', (req, res) => {
 app.use("/user", signupRoute);
 app.use("/auth", loginRoute);
 app.use("/api", AuthenticatedRoute);
+
+//uploads
+app.use("/file", fileUploadRoute); 
 
 
 app.listen(PORT, () => {
