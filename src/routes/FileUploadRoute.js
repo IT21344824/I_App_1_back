@@ -1,32 +1,38 @@
 const express = require('express');
 const router = express.Router();
+const cloudinary = require('../configuration/cloudinaryConfig');
 const multer = require('multer');
-const File = require('../models/File'); 
+const mongoose = require('mongoose');
+const File = require('../models/File'); // Make sure this path is correct
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+const upload = multer({ dest: 'uploads/' });
 
-router.post('/upload', upload.single('file'), async (req, res) => {
-    try {
-        const { firstname } = req.body;
-        const file = req.file;
+const opts = {
+  overwrite: true,
+  invalidate: true,
+  resource_type: "auto",
+  folder: "images",
+};
 
-        if (!file) {
-            return res.status(400).send('No file uploaded.');
-        }
+// Route handler for image upload
+router.post('/uploadImage', upload.single('image'), async (req, res) => {
+  try {
+    const image = req.file.path; // Get the file path
+    const result = await cloudinary.uploader.upload(image, opts);
+    
+    if (result && result.secure_url) {
+      const file = new File({
+        name: req.body.name, // Make sure the frontend sends 'name'
+        imgUrl: result.secure_url
+      });
 
-        const newFile = new File({
-            firstname: firstname,
-            filename: file.originalname,
-            fileData: file.buffer,
-            contentType: file.mimetype,
-        });
-
-        await newFile.save();
-        res.status(200).send('File uploaded and saved successfully.');
-    } catch (error) {
-        res.status(500).send('Error uploading file: ' + error.message);
+      await file.save();
+      return res.status(200).send(result.secure_url);
     }
+    return res.status(500).send({ message: "Upload failed" });
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
 });
 
 module.exports = router;

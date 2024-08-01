@@ -1,10 +1,9 @@
-const mongoose = require('../configuration/dbConfig');
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const fileSchema = new mongoose.Schema({
-    firstname: String,
-    filename: String,
-    fileData: Buffer,
-    contentType: String,
-});
+const fileSchema = new Schema({
+  name: { type: String, required: true },
+  imgUrl: { type: String, required: true },
+}, );
 
-module.exports = mongoose.model("Files", fileSchema);
+module.exports = mongoose.model('File', fileSchema);
