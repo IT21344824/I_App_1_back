@@ -1,12 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const dotenv = require('dotenv');
+
+//routes
 const signupRoute = require("./src/routes/SignupRoute");
 const loginRoute = require("./src/routes/LoginRoute");
 const AuthenticatedRoute = require("./src/routes/AuthenticatedRoute");
 const fileUploadRoute = require("./src/routes/FileUploadRoute");
+const productRoute = require("./src/routes/productRoute");
 
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const dotenv = require('dotenv');
 
 dotenv.config();
 
@@ -24,6 +27,8 @@ app.use("/user", signupRoute);
 app.use("/auth", loginRoute);
 app.use("/api", AuthenticatedRoute);
 app.use("/imgUpload", fileUploadRoute);
+app.use("/products", productRoute);
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
