@@ -2,10 +2,10 @@ const express = require('express');
 const router = express.Router();
 const cloudinary = require('../configuration/cloudinaryConfig');
 const multer = require('multer');
-const mongoose = require('mongoose');
 const File = require('../models/File'); // Make sure this path is correct
 
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 const opts = {
   overwrite: true,
@@ -17,8 +17,9 @@ const opts = {
 // Route handler for image upload
 router.post('/uploadImage', upload.single('image'), async (req, res) => {
   try {
-    const image = req.file.path; // Get the file path
-    const result = await cloudinary.uploader.upload(image, opts);
+    // Convert buffer to base64
+    const imageBuffer = req.file.buffer.toString('base64'); 
+    const result = await cloudinary.uploader.upload(`data:image/jpeg;base64,${imageBuffer}`, opts);
     
     if (result && result.secure_url) {
       const file = new File({
